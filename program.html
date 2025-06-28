@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Activity Tracker</title>
+  <style>
+    :root {
+      --bg: #f0f8ff;
+      --card: white;
+      --text: #000;
+      --primary: #007bff;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin: 20px;
+      color: var(--primary);
+    }
+
+    .container {
+      background: var(--card);
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 700px;
+    }
+
+    input, select {
+      padding: 10px;
+      margin: 5px;
+      width: 45%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 15px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    th {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .summary {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    @media(max-width: 600px) {
+      input, select {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>User Activity Tracker</h1>
+  <div class="container">
+    <form id="activityForm">
+      <input type="text" id="taskName" placeholder="Activity Name" required />
+      <input type="number" id="taskDuration" placeholder="Time in Minutes" required />
+      <button type="submit">Add Activity</button>
+    </form>
+
+    <table id="dataTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Activity</th>
+          <th>Duration (min)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Dynamic rows -->
+      </tbody>
+    </table>
+
+    <div class="summary" id="summary">
+      Total Activities: 0 | Total Time: 0 min | Avg Time: 0 min
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("activityForm");
+    const tableBody = document.querySelector("#dataTable tbody");
+    const summaryDiv = document.getElementById("summary");
+
+    let activities = [];
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("taskName").value.trim();
+      const time = parseInt(document.getElementById("taskDuration").value);
+
+      if (name && time > 0) {
+        activities.push({ name, time });
+        updateTable();
+        form.reset();
+      }
+    });
+
+    function updateTable() {
+      tableBody.innerHTML = "";
+      let totalTime = 0;
+
+      activities.forEach((act, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${act.name}</td>
+          <td>${act.time}</td>
+        `;
+        tableBody.appendChild(row);
+        totalTime += act.time;
+      });
+
+      const avgTime = activities.length ? (totalTime / activities.length).toFixed(1) : 0;
+      summaryDiv.textContent = `Total Activities: ${activities.length} | Total Time: ${totalTime} min | Avg Time: ${avgTime} min`;
+    }
+  </script>
+
+</body>
+</html>
